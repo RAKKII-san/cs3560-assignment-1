@@ -20,15 +20,17 @@ public class MultipleChoiceQuestion extends Question {
     public void addCorrectAns(int index) {
         try {
             validateIndex(index);
+            if (!correctList.contains(index)) {
+                correctList.add(index);
+            }
         } 
 
         catch (IndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
-        }
-
-        
-        if (!correctList.contains(index)) {
-            correctList.add(index);
+            System.out.println(
+                "Invalid input for checking correct answer: " + 
+                "Index " + index + " out of bounds for size " + 
+                this.answers.size()               
+            );
         }
     }
 
@@ -36,6 +38,7 @@ public class MultipleChoiceQuestion extends Question {
     public void addCorrectAns(char letter) {
         try {
             validateLetter(letter);
+            addCorrectAns(letterToIndex(letter));
         }
 
         catch (IllegalArgumentException e) {
@@ -43,8 +46,6 @@ public class MultipleChoiceQuestion extends Question {
                 "Invalid letter input for adding correct answer."
             );
         }
-
-        addCorrectAns(letterToIndex(letter));
     }
 
     // Removes correct answer for index
@@ -68,6 +69,7 @@ public class MultipleChoiceQuestion extends Question {
     public void removeCorrectAns(char letter) {
         try {
             validateLetter(letter);
+            removeCorrectAns(letterToIndex(letter));
         }
 
         catch (IllegalArgumentException e) {
@@ -75,27 +77,31 @@ public class MultipleChoiceQuestion extends Question {
                 "Invalid letter input for removing correct answer."
             );
         }
-
-        removeCorrectAns(letterToIndex(letter));
     }
 
     // checks answer for index
     public boolean checkAnswer(int index) {
         try {
             validateIndex(index);
+            return correctList.contains(index);
         }
 
         catch (IndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
+            System.out.println(
+                "Invalid input for checking correct answer: " + 
+                "Index " + index + " out of bounds for size " + 
+                this.answers.size()               
+            );
         }
 
-        return correctList.contains(index);
+        return false;
     }
 
     // checks answer for letter
     public boolean checkAnswer(char letter) {
         try {
             validateLetter(letter);
+            return checkAnswer(letterToIndex(letter));
         }
 
         catch (IllegalArgumentException e) {
@@ -104,6 +110,6 @@ public class MultipleChoiceQuestion extends Question {
             );
         }
 
-        return checkAnswer(letterToIndex(letter));
+        return false;
     }
 }

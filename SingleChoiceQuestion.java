@@ -17,25 +17,58 @@ public class SingleChoiceQuestion extends Question {
 
     // sets correct answer with index
     public void setCorrectAns(int index) {
-        validateIndex(index);
-        this.correctAns = index;
+        try {
+            validateIndex(index);
+            this.correctAns = index;
+        } catch (Exception e) {
+            System.out.println(
+                "Invalid input for setting correct answer: " + 
+                "Index " + index + " out of bounds for size " + 
+                this.answers.size()               
+            );
+        }
+        
     }
 
     // sets correct answer with letter
     public void setCorrectAns(char letter) {
-        validateLetter(letter);
-        setCorrectAns(letterToIndex(letter));
+        try {
+            validateLetter(letter);
+            setCorrectAns(letterToIndex(letter));
+        } catch (Exception e) {
+            System.out.println(
+                "Invalid letter input for setting correct answer."
+            );
+        }
+
     }
 
     // checks correct answer with index
     public boolean checkAnswer(int index) {
-        validateIndex(index);
-        return index == correctAns;
+        try {
+            validateIndex(index);
+            return index == correctAns;
+        } catch (Exception e) {
+            System.out.println(
+                "Invalid input for checking correct answer: " + 
+                "Index " + index + " out of bounds for size " + 
+                this.answers.size()               
+            );
+        }
+        return false;
     }
 
     // checks correct answer with letter
     public boolean checkAnswer(char letter) {
-        validateLetter(letter);
-        return checkAnswer(letterToIndex(letter));
+        try {
+            validateLetter(letter);
+            return checkAnswer(letterToIndex(letter));
+        } catch (Exception e) {
+            System.out.println(
+                "Invalid letter input for checking answer."
+            );
+        }
+        
+        return false;
     }
 }

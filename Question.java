@@ -11,7 +11,7 @@ public abstract class Question {
             validateSize();
         } 
 
-        catch (IllegalStateException e) {
+        catch (Exception e) {
             System.out.println(
                 "Questions cannot have more than 26 answers."
             );
@@ -27,7 +27,7 @@ public abstract class Question {
             validateSize();
         } 
 
-        catch (IllegalStateException e) {
+        catch (Exception e) {
             System.out.println(
                 "Questions cannot have more than 26 answers."
             );
@@ -48,7 +48,7 @@ public abstract class Question {
             System.out.println(letter + ": " + ans);
         } 
 
-        catch (IndexOutOfBoundsException e) {
+        catch (Exception e) {
             System.out.println("Questions cannot have more than 26 answers.");
         }
     }
