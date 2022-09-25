@@ -1,74 +1,57 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SingleChoiceQuestion extends Question {
-    private int correctAns;
+    private char correctAns;
 
     public SingleChoiceQuestion() {
-        this.correctAns = -1;
-        this.answers = new ArrayList<>();
+        this.correctAns = '\0';
+        this.answers = new HashMap<>();
     }
 
     // constructor with preset question
     public SingleChoiceQuestion(String q) {
         this.query = q;
-        this.correctAns = -1;
-        this.answers = new ArrayList<>();
+        this.correctAns = '\0';
+        this.answers = new HashMap<>();
     }
 
-    // sets correct answer with index
-    public void setCorrectAns(int index) {
-        try {
-            validateIndex(index);
-            this.correctAns = index;
-        } catch (Exception e) {
-            System.out.println(
-                "Invalid input for setting correct answer: " + 
-                "Index " + index + " out of bounds for size " + 
-                this.answers.size()               
-            );
-        }
-        
+    // constructor with preset question and correct answer
+    public SingleChoiceQuestion(String q, char correctAns) {
+        this.query = q;
+        this.correctAns = correctAns;
+        this.answers = new HashMap<>();
     }
 
     // sets correct answer with letter
     public void setCorrectAns(char letter) {
         try {
             validateLetter(letter);
-            setCorrectAns(letterToIndex(letter));
+            this.correctAns = letter;
         } catch (Exception e) {
             System.out.println(
-                "Invalid letter input for setting correct answer."
+                "Invalid letter input."
             );
         }
-
     }
 
     // checks correct answer with index
-    public boolean checkAnswer(int index) {
+    public boolean checkAnswer(char letter) {
         try {
-            validateIndex(index);
-            return index == correctAns;
+            validateLetter(letter);
+            return letter == correctAns;
         } catch (Exception e) {
             System.out.println(
-                "Invalid input for checking correct answer: " + 
-                "Index " + index + " out of bounds for size " + 
-                this.answers.size()               
+                "Invalid letter input."
             );
         }
         return false;
     }
 
-    // checks correct answer with letter
-    public boolean checkAnswer(char letter) {
-        try {
-            validateLetter(letter);
-            return checkAnswer(letterToIndex(letter));
-        } catch (Exception e) {
-            System.out.println(
-                "Invalid letter input for checking answer."
-            );
-        }
-        
-        return false;
+    public void printCorrectAns() {
+        System.out.println("Correct answer: " + correctAns);
+    }
+
+    public boolean isValidSingleChoiceQ() {
+        return correctAns != '\0';
     }
 }

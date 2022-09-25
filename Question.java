@@ -1,10 +1,11 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
-public abstract class Question {
+public abstract class Question extends VotingService {
     protected String query;
-    protected ArrayList<String> answers;
+    protected HashMap<Character,String> answers;
+    protected HashMap<Character,Integer> frequencies;
 
-    // Adds answer to the bottom of the list
+    // Adds answer to the end of the list
     public void addAnswer(String ans) {
         try {
             // Using letters limit questions to 26 answers each
@@ -17,46 +18,68 @@ public abstract class Question {
             );
         }
 
-        answers.add(ans);
+        char letter = (char)(answers.size() + 'A');
+        answers.put(letter, ans);
+        frequencies.put(letter, 0);
     }
 
-    // Adds answer to index, pushing everything after it down 1 index
-    public void addAnswer(int index, String ans) {
+    // Adds answer to a letter on the list
+    // If letter already exists in answer list, new ans replaces old
+    // If letter does not exist, ans is placed at the end of the list
+    public void addAnswer(char letter, String ans) {
         try {
-            // Using letters limit questions to 26 answers each
-            validateSize();
-        } 
+            validateLetter(letter);
+        }
 
         catch (Exception e) {
             System.out.println(
-                "Questions cannot have more than 26 answers."
+                "Invalid letter input."
             );
         }
 
-        answers.add(index, ans);
+        if (!answers.containsKey(letter)) {
+            try {
+                // Using letters limit questions to 26 answers each
+                validateSize();
+                letter = (char)(answers.size() + 'A');
+            } 
+    
+            catch (Exception e) {
+                System.out.println(
+                    "Questions cannot have more than 26 answers."
+                );
+                return;
+            }
+        }
+
+        answers.put(letter, ans);
+        frequencies.put(letter, 0);
     }
 
-    // Prints out one answer from an index
-    public void printAnswer(int index)
+
+    // Prints out one answer from a letter
+    public void printAnswer(char letter)
     {
         try {
-            // Using letters limit questions to 26 answers each
-            validateIndex(index);
+            validateLetter(letter);
             
-            String ans = answers.get(index);
-            char letter = (char)(index + 'A');
+            String ans = answers.get(letter);
             System.out.println(letter + ": " + ans);
         } 
 
         catch (Exception e) {
-            System.out.println("Questions cannot have more than 26 answers.");
+            System.out.println(
+                "Invalid letter input."
+            );
         }
     }
 
     // Prints all answers instead of just one
     public void printAllAnswers() {
+        char letter = 'A';
         for (int i = 0; i < answers.size(); ++i) {
-            printAnswer(i);
+            printAnswer(letter);
+            letter++;
         }
     }
 
@@ -70,16 +93,8 @@ public abstract class Question {
 
     protected void validateLetter(char letter) 
         throws IllegalArgumentException {
-    if ((letter < 'A' || letter > 'Z') &&
-                (letter < 'a' || letter > 'z')) {
+    if ((letter < 'A' || letter > 'Z')) {
             throw new IllegalArgumentException();
-        }
-    }
-
-    protected void validateIndex(int index) 
-        throws IndexOutOfBoundsException {
-        if (index >= answers.size()) {
-            throw new IndexOutOfBoundsException();
         }
     }
 
@@ -91,7 +106,37 @@ public abstract class Question {
         }
     }
 
-    protected int letterToIndex(char letter) {
-        return letter > 'Z' ? letter - 'a' : letter - 'A';
+    public void setFrequency(char letter, int freq) {
+        try {
+            validateLetter(letter);
+            frequencies.replace(letter, freq);
+        } 
+
+        catch (Exception e) {
+            System.out.println(
+                "Invalid letter input."
+            );
+        }
+    }
+
+    public int getFrequency(char letter) {
+        int freq;
+        try {
+            validateLetter(letter);
+            freq = frequencies.get(letter);
+        } 
+
+        catch (Exception e) {
+            System.out.println(
+                "Invalid letter input."
+            );
+            return 0;
+        }
+
+        return freq;
+    }
+
+    public void clearFrequencies() {
+        frequencies.clear();
     }
 }

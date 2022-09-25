@@ -1,115 +1,103 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+
 public class MultipleChoiceQuestion extends Question {
-    private Set<Integer> correctList;
+    private Set<Character> correctList;
 
     public MultipleChoiceQuestion() {
+        this.query = "";
         this.correctList = new HashSet<>();
-        this.answers = new ArrayList<>();
+        this.answers = new HashMap<>();
     }
 
+    // Constructor that initializes query
     public MultipleChoiceQuestion(String q) {
         this.query = q;
         this.correctList = new HashSet<>();
-        this.answers = new ArrayList<>();
+        this.answers = new HashMap<>();
     }
 
     // Adds correct answer for index
-    public void addCorrectAns(int index) {
+    public void addCorrectAns(char letter) {
         try {
-            validateIndex(index);
-            if (!correctList.contains(index)) {
-                correctList.add(index);
+            validateLetter(letter);
+            if (answers.containsKey(letter)) {
+                correctList.add(letter);
+            } else {
+                System.out.println(letter + " not in correct answer list!");
             }
         } 
 
         catch (IndexOutOfBoundsException e) {
             System.out.println(
-                "Invalid input for checking correct answer: " + 
-                "Index " + index + " out of bounds for size " + 
-                this.answers.size()               
+                "Invalid letter input."
             );
         }
     }
 
-    // Adds correct answer for letter
-    public void addCorrectAns(char letter) {
-        try {
-            validateLetter(letter);
-            addCorrectAns(letterToIndex(letter));
-        }
-
-        catch (IllegalArgumentException e) {
-            System.out.println(
-                "Invalid letter input for adding correct answer."
-            );
-        }
-    }
-
-    // Removes correct answer for index
-    public void removeCorrectAns(int index) {
-        try {
-            if (!correctList.contains(index)) {
-                throw new IllegalArgumentException();
-            } else {
-                correctList.remove(index);
-            }
-        }
-
-        catch (IllegalArgumentException e) {
-            System.out.println(
-                "Correct Answer does not exist in list."
-            );
-        }
-    }
-
-    // Removes correct answer for letter
+    // Removes correct answer
     public void removeCorrectAns(char letter) {
         try {
             validateLetter(letter);
-            removeCorrectAns(letterToIndex(letter));
-        }
+            if (answers.containsKey(letter)) {
+                correctList.remove(letter);
+            } else {
+                System.out.println(letter + " not in correct answer list!");
+            }
+        } 
 
-        catch (IllegalArgumentException e) {
+        catch (IndexOutOfBoundsException e) {
             System.out.println(
-                "Invalid letter input for removing correct answer."
+                "Invalid letter input."
             );
         }
+
+        correctList.remove(letter);
     }
 
     // checks answer for index
-    public boolean checkAnswer(int index) {
+    private boolean checkAnswer(char letter) {
         try {
-            validateIndex(index);
-            return correctList.contains(index);
+            validateLetter(letter);
+            return correctList.contains(letter);
         }
 
         catch (IndexOutOfBoundsException e) {
             System.out.println(
-                "Invalid input for checking correct answer: " + 
-                "Index " + index + " out of bounds for size " + 
-                this.answers.size()               
+                "Invalid letter input."
             );
         }
 
         return false;
     }
 
-    // checks answer for letter
-    public boolean checkAnswer(char letter) {
-        try {
-            validateLetter(letter);
-            return checkAnswer(letterToIndex(letter));
+    public boolean checkCorrect(List<Character> ans) {
+        if (ans.isEmpty()) return false;
+        for (char c : ans) {
+            if (!checkAnswer(c)) return false;
         }
+        return true;
+    }
 
-        catch (IllegalArgumentException e) {
-            System.out.println(
-                "Invalid letter input for checking answer."
-            );
+    public Set<Character> getCorrectList() {
+        return correctList;
+    }
+
+    public void printCorrectList() {
+        StringBuilder sb = new StringBuilder();
+        for (char c : correctList) {
+            sb.append(c);
+            sb.append(' ');
         }
+        System.out.println(
+            "Correct answers: " + sb.toString()
+        );
+    }
 
-        return false;
+    public boolean validateQuestion() {
+        return correctList.size() > 0;
     }
 }
