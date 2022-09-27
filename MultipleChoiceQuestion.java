@@ -7,12 +7,6 @@ import java.util.Set;
 public class MultipleChoiceQuestion extends Question {
     private Set<Character> correctList;
 
-    public MultipleChoiceQuestion() {
-        this.query = "";
-        this.correctList = new HashSet<>();
-        this.answers = new HashMap<>();
-    }
-
     // Constructor that initializes query
     public MultipleChoiceQuestion(String q) {
         this.query = q;
@@ -58,7 +52,10 @@ public class MultipleChoiceQuestion extends Question {
         correctList.remove(letter);
     }
 
-    // checks answer for index
+    // checks answer if it's correct
+    // this isn't used but assuming that the code will be expanded
+    // I think this would be a good choice to let the student know
+    // if they got the answer right or not
     private boolean checkAnswer(char letter) {
         try {
             validateLetter(letter);
@@ -74,6 +71,9 @@ public class MultipleChoiceQuestion extends Question {
         return false;
     }
 
+    // checks if all of the answers in a MCQ submission are correct
+    // not used but I think this would be a good method to use
+    // for an expansion
     public boolean checkCorrect(List<Character> ans) {
         if (ans.isEmpty()) return false;
         for (char c : ans) {
@@ -82,11 +82,13 @@ public class MultipleChoiceQuestion extends Question {
         return true;
     }
 
-    public Set<Character> getCorrectList() {
+    @Override
+    public Set<Character> getCorrectAns() {
         return correctList;
     }
 
-    public void printCorrectList() {
+    @Override
+    public void printCorrectAnswers() {
         StringBuilder sb = new StringBuilder();
         for (char c : correctList) {
             sb.append(c);
@@ -97,6 +99,9 @@ public class MultipleChoiceQuestion extends Question {
         );
     }
 
+    // this is to stop the person making the questions from being
+    // a total jerk and making a question with no right answers
+    @Override
     public boolean validateQuestion() {
         return correctList.size() > 0;
     }

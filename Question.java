@@ -1,9 +1,14 @@
+import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
-public abstract class Question extends VotingService {
+public abstract class Question {
     protected String query;
-    protected HashMap<Character,String> answers;
-    protected HashMap<Character,Integer> frequencies;
+    protected Map<Character,String> answers;
+
+    public Question() {
+        this.answers = new HashMap<>();
+    }
 
     // Adds answer to the end of the list
     public void addAnswer(String ans) {
@@ -20,7 +25,6 @@ public abstract class Question extends VotingService {
 
         char letter = (char)(answers.size() + 'A');
         answers.put(letter, ans);
-        frequencies.put(letter, 0);
     }
 
     // Adds answer to a letter on the list
@@ -53,7 +57,6 @@ public abstract class Question extends VotingService {
         }
 
         answers.put(letter, ans);
-        frequencies.put(letter, 0);
     }
 
 
@@ -91,13 +94,6 @@ public abstract class Question extends VotingService {
         System.out.println(this.query);    
     }
 
-    protected void validateLetter(char letter) 
-        throws IllegalArgumentException {
-    if ((letter < 'A' || letter > 'Z')) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     // Using letters limit questions to 26 answers each
     private void validateSize() 
         throws IllegalStateException {
@@ -106,37 +102,20 @@ public abstract class Question extends VotingService {
         }
     }
 
-    public void setFrequency(char letter, int freq) {
-        try {
-            validateLetter(letter);
-            frequencies.replace(letter, freq);
-        } 
-
-        catch (Exception e) {
-            System.out.println(
-                "Invalid letter input."
-            );
+    // letters should only be capital alphabet letters
+    // so anything else would throw an exception just in case
+    protected void validateLetter(char letter) 
+        throws IllegalArgumentException {
+        if ((letter < 'A' || letter > 'Z')) {
+            throw new IllegalArgumentException();
         }
     }
 
-    public int getFrequency(char letter) {
-        int freq;
-        try {
-            validateLetter(letter);
-            freq = frequencies.get(letter);
-        } 
-
-        catch (Exception e) {
-            System.out.println(
-                "Invalid letter input."
-            );
-            return 0;
-        }
-
-        return freq;
+    public int getNumberOfAnswers() {
+        return answers.size();
     }
 
-    public void clearFrequencies() {
-        frequencies.clear();
-    }
+    protected abstract void printCorrectAnswers();
+    protected abstract boolean validateQuestion();
+    protected abstract Set<Character> getCorrectAns();
 }
