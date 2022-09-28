@@ -1,18 +1,14 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Student {
-    ArrayList<Character> answers;
+    List<Character> answers;
     String id;
-
-    // There really shouldn't be a default constructor for Student
-    // without ID but sure
-    public Student() {
-        this.id = "";
-    }
 
     // Constructor with string id
     public Student(String id) {
         this.id = id;
+        this.answers = new ArrayList<>();
     }
 
     public void addAnswer(char letter) {

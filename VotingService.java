@@ -5,17 +5,13 @@ import java.util.HashMap;
 
 public class VotingService {
     private Question q;
-    private HashMap<Student, List<Character>> submissions;
-    private HashMap<Character,Integer> frequencies;
-
-    public VotingService() {
-        this.submissions = new HashMap<>();
-    }
+    private Map<Student, List<Character>> submissions;
+    private Map<Character,Integer> frequencies;
 
     public VotingService(Question q) {
         this.q = q;
         this.submissions = new HashMap<>();
-        initializeFrequencies();
+        this.frequencies = new HashMap<>();
     }
     
     public void printQuestion() {
@@ -23,40 +19,34 @@ public class VotingService {
         q.printAllAnswers();
     }
 
-    // when multiple answers are allowed
-    public void submitAnswer(MultipleChoiceQuestion q, Student stu) {
+    public void submitAnswer(Student stu) {
         // if student has already submitted, delete last submission first
         if (submissions.containsKey(stu)) {
             List<Character> temp = submissions.get(stu);
-            for (char c : temp) {
+            if (q.isSingleChoice()) { 
+                char c = temp.get(0); // only one answer in SCQ
                 setFrequency(c, frequencies.get(c) - 1);
+            } else {
+                for (char c : temp) {
+                    setFrequency(c, frequencies.get(c) - 1);
+                }
             }
+
             submissions.remove(stu);
         }
 
-        // add frequency for given answer by 1 for each answer in list
-        for (char c : stu.answers) {
+        if (q.isSingleChoice()) { // when only one answer is allowed
+            char c = stu.answers.get(0);
             setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
+        } else {
+            // add frequency for given answer by 1 for each answer in list
+            for (char c : stu.answers) {
+                setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
+            }
         }
 
         submissions.put(stu, stu.answers);
-    }
-
-    // when only one answer is allowed
-    public void submitAnswer(SingleChoiceQuestion q, Student stu) {
-        // if student has already submitted, delete last submission first
-        if (submissions.containsKey(stu)) {
-            List<Character> temp = submissions.get(stu);
-            char c = temp.get(0);
-            setFrequency(c, frequencies.get(c) - 1);
-            submissions.remove(stu);
-        }
-
-        // add frequency for given answer by 1 for student's first answer in list
-        char c = stu.answers.get(0);
-        setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
-
-        submissions.put(stu, stu.answers);
+        stu.answers.clear();
     }
 
     public void printResults(Question q) {
@@ -64,7 +54,8 @@ public class VotingService {
             if (!q.validateQuestion()) {
                 throw new IllegalStateException();
             }
-            q.printCorrectAnswers();
+            q.printCorrectAns();
+            System.out.println("Answer Frequencies:");
             printAllFrequencies();
         } catch (Exception e) {
             System.out.println(
@@ -77,7 +68,7 @@ public class VotingService {
     public void setFrequency(char letter, int freq) {
         try {
             validateLetter(letter);
-            frequencies.replace(letter, freq);
+            frequencies.put(letter, freq);
         } 
 
         catch (Exception e) {
@@ -106,10 +97,8 @@ public class VotingService {
     }
 
     // sets all frequencies to 0
-    private void initializeFrequencies() {
-        for (char c : q.answers.keySet()) {
-            frequencies.put(c, 0);
-        }
+    public void initializeFrequencies() {
+        frequencies.clear();
     }
 
     // prints out all frequencies

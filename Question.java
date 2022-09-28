@@ -1,14 +1,9 @@
+import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
 
 public abstract class Question {
     protected String query;
     protected Map<Character,String> answers;
-
-    public Question() {
-        this.answers = new HashMap<>();
-    }
 
     // Adds answer to the end of the list
     public void addAnswer(String ans) {
@@ -61,7 +56,7 @@ public abstract class Question {
 
 
     // Prints out one answer from a letter
-    public void printAnswer(char letter)
+    private void printAnswer(char letter)
     {
         try {
             validateLetter(letter);
@@ -86,6 +81,7 @@ public abstract class Question {
         }
     }
 
+    // sets question query
     public void setQuestion(String q) {
         this.query = q;
     }
@@ -115,7 +111,8 @@ public abstract class Question {
         return answers.size();
     }
 
-    protected abstract void printCorrectAnswers();
+    protected abstract void printCorrectAns();
     protected abstract boolean validateQuestion();
-    protected abstract Set<Character> getCorrectAns();
+    public abstract List<Character> getCorrectAns();
+    public abstract boolean isSingleChoice();
 }
