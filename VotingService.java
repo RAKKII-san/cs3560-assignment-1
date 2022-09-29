@@ -4,29 +4,33 @@ import java.util.StringJoiner;
 import java.util.HashMap;
 
 public class VotingService {
-    private Question q;
+    private Question question;
     private Map<Student, List<Character>> submissions;
     private Map<Character,Integer> frequencies;
 
+    // Constructs the voting service using a preset question
     public VotingService(Question q) {
-        this.q = q;
+        this.question = q;
         this.submissions = new HashMap<>();
         this.frequencies = new HashMap<>();
     }
     
+    // Prints question and all answers from the question
     public void printQuestion() {
-        q.printQuestion();
-        q.printAllAnswers();
+        question.printQuestion();
+        question.printAllAnswers();
     }
 
+    // Submits answer from a given student to the submission and
+    // frequency maps
     public void submitAnswer(Student stu) {
         // if student has already submitted, delete last submission first
         if (submissions.containsKey(stu)) {
             List<Character> temp = submissions.get(stu);
-            if (q.isSingleChoice()) { 
+            if (question.isSingleChoice()) { 
                 char c = temp.get(0); // only one answer in SCQ
                 setFrequency(c, frequencies.get(c) - 1);
-            } else {
+            } else { // multiple choice question requires multiple answers
                 for (char c : temp) {
                     setFrequency(c, frequencies.get(c) - 1);
                 }
@@ -35,6 +39,7 @@ public class VotingService {
             submissions.remove(stu);
         }
 
+        // Add answer to frequencies
         if (q.isSingleChoice()) { // when only one answer is allowed
             char c = stu.answers.get(0);
             setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
@@ -44,18 +49,20 @@ public class VotingService {
                 setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
             }
         }
-
-        submissions.put(stu, stu.answers);
-        stu.answers.clear();
+        
+        submissions.put(stu, stu.answers); // assign answer(s) to a student
+        stu.answers.clear(); // TODO add clearAnswers function for final version
     }
 
+    // Print correct answers and frequencies for all responses
+    // Requires the question to have at least one correct answer
     public void printResults(Question q) {
         try {
             if (!q.validateQuestion()) {
                 throw new IllegalStateException();
             }
             q.printCorrectAns();
-            System.out.println("Answer Frequencies:");
+            System.out.println("Answer Frequencies: ");
             printAllFrequencies();
         } catch (Exception e) {
             System.out.println(
@@ -64,7 +71,7 @@ public class VotingService {
         }
     }
 
-    // sets frequency for a letter choice
+    // Sets frequency for a letter choice
     public void setFrequency(char letter, int freq) {
         try {
             validateLetter(letter);
@@ -96,12 +103,12 @@ public class VotingService {
         return freq;
     }
 
-    // sets all frequencies to 0
+    // Sets all frequencies to 0
     public void initializeFrequencies() {
         frequencies.clear();
     }
 
-    // prints out all frequencies
+    // Prints out all frequencies
     public void printAllFrequencies() {
         String delimiter = ", ";
         StringJoiner joiner = new StringJoiner(delimiter);
@@ -114,8 +121,8 @@ public class VotingService {
         System.out.println(joiner.toString());
     }
 
-    // letters should only be capital alphabet letters
-    // so anything else would throw an exception just in case
+    // Letters should only be capital alphabet letters
+    // So anything else would throw an exception
     private void validateLetter(char letter) 
         throws IllegalArgumentException {
         if ((letter < 'A' || letter > 'Z')) {
