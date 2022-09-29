@@ -26,7 +26,7 @@ public class Student {
     }
     
     // Clears student's answers from answer list
-    public void clearAnswer() {
+    public void clearAnswers() {
         answers.clear();
     }
 
