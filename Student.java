@@ -24,6 +24,11 @@ public class Student {
             );
         }
     }
+    
+    // Clears student's answers from answer list
+    public void clearAnswer() {
+        answers.clear();
+    }
 
     // char can't just be anything, it has to be A-Z capital letters
     private void validateLetter(char letter) 
