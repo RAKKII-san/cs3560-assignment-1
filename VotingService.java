@@ -51,7 +51,7 @@ public class VotingService {
         }
         
         submissions.put(stu, stu.answers); // assign answer(s) to a student
-        stu.answers.clear(); // TODO add clearAnswers function for final version
+        stu.clearAnswers(); // resets student's answers
     }
 
     // Print correct answers and frequencies for all responses
