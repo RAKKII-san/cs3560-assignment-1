@@ -11,6 +11,8 @@ public class Student {
         this.answers = new ArrayList<>();
     }
 
+    // Adds answer to bottom of the list for Student
+    // Requires input validation first
     public void addAnswer(char letter) {
         try {
             validateLetter(letter);
