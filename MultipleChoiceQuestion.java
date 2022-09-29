@@ -54,6 +54,7 @@ public class MultipleChoiceQuestion extends Question {
         return correctList;
     }
 
+	// TODO Use StringJoiner to print comma-separated list
     @Override
     public void printCorrectAns() {
         StringBuilder sb = new StringBuilder();
@@ -66,8 +67,7 @@ public class MultipleChoiceQuestion extends Question {
         );
     }
 
-    // this is to stop the person making the questions from being
-    // a total jerk and making a question with no right answers
+    // Checks the question for having at least 1 correct answer
     @Override
     public boolean validateQuestion() {
         return correctList.size() > 0;
