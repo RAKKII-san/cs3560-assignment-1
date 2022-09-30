@@ -3,21 +3,24 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class SimulationDriver {
-    public static Map<Integer, Student> students = new HashMap<>();
+    public static Map<Integer, Student> studentList = new HashMap<>();
     public static ArrayList<Question> questionList = new ArrayList<>();  
-    // end questionList
+
+    // A given number of students are added to the student list
     public static void addStudents(int population) {
         for (int i = 0; i < population; i++) {
             StringBuilder sb = new StringBuilder("Student ");
-            sb.append(i + 1);
+            sb.append(i + 1); // Student ID number is 1-indexed
             Student newStudent = new Student(sb.toString());
-            students.put(i, newStudent);
+            studentList.put(i, newStudent);
         }
     }
 
-    public static void chooseMCQAnswer(Student s, Question q) {
+    // Student randomly picks answers from a multiple choice question
+    public static void chooseMCQAnswer(Student s, Question q) 
+            throws IllegalArgumentException {
         for (int i = 0; i < q.getNumberOfAnswers(); i++) {
-            // if random > 0.75 the student will choose the answer
+            // If random > 0.75 the student will choose the answer
             if (Math.random() > 0.75) {
                 char letter = (char)('A' + i);
                 s.addAnswer(letter);
@@ -25,15 +28,18 @@ public class SimulationDriver {
         }
     }
 
-    // student will randomly pick 1 answer from all possible answers
-    public static void chooseSCQAnswer(Student s, Question q) {
+    // Student randomly picks 1 answer from all possible answers
+    public static void chooseSCQAnswer(Student s, Question q) 
+            throws IllegalArgumentException {
+        // Student chooses (n + 1)th answer,
+        // n = random int from 0 to total answers - 1
         int totalAnswers = q.getNumberOfAnswers();
         int random = (int)(Math.random() * totalAnswers);
         char ans = (char)('A' + random);
         s.addAnswer(ans);
     }
 
-    // here I hardcode a set of questions
+    // Provides a set of questions
     public static void setQuestions() {
         String q1Query = 
             "What is the answer to life, the universe, & everything?";
@@ -179,32 +185,45 @@ public class SimulationDriver {
         questionList.add(q8);
     }
 
-    //
+    // Chooses a question from the question list and removes it
+    // to prevent the same question from being picked twice
     public static Question chooseQuestion() {
         int randomQ = (int)(Math.random() * questionList.size());
         Question returnQ = questionList.get(randomQ);
         questionList.remove(randomQ);
         return returnQ;
     }
-    public static void main(String[] args) {
-        int numOfStudents = (int)(Math.random() * 10 + 30);
+    public static void main(String[] args) 
+        throws IllegalArgumentException, IllegalStateException {
+        // Randomly chooses between 100-199 students to test
+        int numOfStudents = (int)(Math.random() * 100 + 100);
+
+        // Number is editable, however only 8 example questions 
+        // were made; if numOfQuestions > actual number of questions,
+        // the for loop ends early
         int numOfQuestions = 8;
+
+        // Prints out number of students and questions
         System.out.printf(
             "Testing %d students on %d questions.\n", 
             numOfStudents, numOfQuestions
         );
-        addStudents(numOfStudents);
 
+        addStudents(numOfStudents);
         setQuestions();
 
+        // Goes through each question per loop iteration
         for (int i = 0; i < numOfQuestions; i++) {
-            if (questionList.isEmpty()) break;
+            // To prevent empty list issues
+            if (questionList.isEmpty()) break; 
+
             Question currQ = chooseQuestion();
             VotingService vote = new VotingService(currQ);
             System.out.printf("\nQuestion %d:\n", i + 1);
             vote.printQuestion();
-            for (int j = 0; j < students.size(); j++) {
-                Student stu = students.get(j);
+
+            for (int j = 0; j < studentList.size(); j++) {
+                Student stu = studentList.get(j);
                 if (currQ.isSingleChoice()) {
                     chooseSCQAnswer(stu, currQ);
                 } else {
@@ -212,7 +231,8 @@ public class SimulationDriver {
                 }
                 vote.submitAnswer(stu);
             }
-            vote.printResults(currQ);
+
+            vote.printResults();
         }
     }
 }

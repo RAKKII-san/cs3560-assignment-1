@@ -40,7 +40,7 @@ public class VotingService {
         }
 
         // Add answer to frequencies
-        if (q.isSingleChoice()) { // when only one answer is allowed
+        if (question.isSingleChoice()) { // when only one answer is allowed
             char c = stu.answers.get(0);
             setFrequency(c, frequencies.getOrDefault(c, 0) + 1);
         } else {
@@ -56,12 +56,15 @@ public class VotingService {
 
     // Print correct answers and frequencies for all responses
     // Requires the question to have at least one correct answer
-    public void printResults(Question q) {
+    public void printResults() 
+            throws IllegalStateException {
         try {
-            if (!q.validateQuestion()) {
+            // checks if question has >= 1 correct answer
+            if (!question.validateQuestion()) {
                 throw new IllegalStateException();
             }
-            q.printCorrectAns();
+
+            question.printCorrectAns();
             System.out.println("Answer Frequencies: ");
             printAllFrequencies();
         } catch (Exception e) {
@@ -72,30 +75,32 @@ public class VotingService {
     }
 
     // Sets frequency for a letter choice
-    public void setFrequency(char letter, int freq) {
+    public void setFrequency(char letter, int freq) 
+            throws IllegalArgumentException {
         try {
-            validateLetter(letter);
+            validateLetter(letter); // letter must be A-Z
             frequencies.put(letter, freq);
         } 
 
         catch (Exception e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
         }
     }
 
     // get the frequency for a specific choice
-    public int getFrequency(char letter) {
+    public int getFrequency(char letter) 
+            throws IllegalArgumentException {
         int freq;
         try {
-            validateLetter(letter);
+            validateLetter(letter); // letter must be A-Z
             freq = frequencies.get(letter);
         } 
 
         catch (Exception e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
             return 0;
         }
@@ -103,15 +108,12 @@ public class VotingService {
         return freq;
     }
 
-    // Sets all frequencies to 0
-    public void initializeFrequencies() {
-        frequencies.clear();
-    }
-
-    // Prints out all frequencies
+    // Prints out all frequencies in a comma-separated list
     public void printAllFrequencies() {
-        String delimiter = ", ";
+        String delimiter = ", "; 
         StringJoiner joiner = new StringJoiner(delimiter);
+
+        // character = answer letter, integer = frequency for that answer
         for (Map.Entry<Character,Integer> freq : frequencies.entrySet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(freq.getKey() + ": " + freq.getValue());
@@ -124,7 +126,7 @@ public class VotingService {
     // Letters should only be capital alphabet letters
     // So anything else would throw an exception
     private void validateLetter(char letter) 
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if ((letter < 'A' || letter > 'Z')) {
             throw new IllegalArgumentException();
         }

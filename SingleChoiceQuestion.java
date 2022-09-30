@@ -5,44 +5,44 @@ import java.util.HashMap;
 public class SingleChoiceQuestion extends Question {
     private char correctAns;
 
-    // constructor with preset question
+    // Constructor with preset question but no preset correct answer
     public SingleChoiceQuestion() {
         this.correctAns = '\0';
         this.answers = new HashMap<>();
     }
 
-    // constructor with preset question and correct answer
+    // Constructor with preset question and correct answer
     public SingleChoiceQuestion(char correctAns) {
         this.correctAns = correctAns;
         this.answers = new HashMap<>();
     }
 
-    // sets correct answer with letter
-    public void setCorrectAns(char letter) {
+    // Sets correct answer with letter
+    public void setCorrectAns(char letter) 
+            throws IllegalArgumentException {
         try {
-            validateLetter(letter);
+            validateLetter(letter); // letter must be A-Z
             this.correctAns = letter;
         } catch (Exception e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
         }
     }
 
-    // it should only print 1 correct answer
+    // Print only 1 correct answer
     @Override
     public void printCorrectAns() {
         System.out.println("Correct answer: " + correctAns);
     }
 
-    // this is to stop the person making the questions from being
-    // a total jerk and making a question with no right answers
+    // Checks the question for having 1 correct answer
     public boolean validateQuestion() {
         return correctAns != '\0';
     }
 
-    // even though there's only one correct answer the method
-    // still requires the return to be a set
+    // Even though there's only one correct answer the method
+    // still requires the return to be a list
 	public List<Character> getCorrectAns() {
 		List<Character> ans = new ArrayList<Character>();
         ans.add(correctAns);

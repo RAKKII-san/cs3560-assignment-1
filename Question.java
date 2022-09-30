@@ -25,14 +25,15 @@ public abstract class Question {
     // Adds answer to a letter on the list
     // If letter already exists in answer list, new ans replaces old
     // If letter does not exist, ans is placed at the end of the list
-    public void addAnswer(char letter, String ans) {
+    public void addAnswer(char letter, String ans) 
+            throws IllegalArgumentException, IllegalStateException {
         try {
             validateLetter(letter);
         }
 
         catch (Exception e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
         }
 
@@ -54,56 +55,51 @@ public abstract class Question {
         answers.put(letter, ans);
     }
 
-
     // Prints out one answer from a letter
     private void printAnswer(char letter)
-    {
-        try {
-            validateLetter(letter);
-            
-            String ans = answers.get(letter);
-            System.out.println(letter + ": " + ans);
-        } 
-
-        catch (Exception e) {
-            System.out.println(
-                "Invalid letter input."
-            );
-        }
+            throws IllegalArgumentException {
+        validateLetter(letter);
+        
+        String ans = answers.get(letter);
+        System.out.println(letter + ": " + ans);
     }
 
     // Prints all answers instead of just one
     public void printAllAnswers() {
         char letter = 'A';
+
         for (int i = 0; i < answers.size(); ++i) {
             printAnswer(letter);
             letter++;
         }
     }
 
-    // sets question query
+    // Sets question query
     public void setQuestion(String q) {
         this.query = q;
     }
 
+    // Prints the question query
     public void printQuestion() {
         System.out.println(this.query);    
     }
 
     // Using letters limit questions to 26 answers each
     private void validateSize() 
-        throws IllegalStateException {
+            throws IllegalStateException {
         if (answers.size() >= 26) {
             throw new IllegalStateException();
         }
     }
 
-    // letters should only be capital alphabet letters
+    // Letters should only be capital alphabet letters
     // so anything else would throw an exception just in case
     protected void validateLetter(char letter) 
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if ((letter < 'A' || letter > 'Z')) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                "Invalid letter input, letter must be A-Z."
+            );
         }
     }
 

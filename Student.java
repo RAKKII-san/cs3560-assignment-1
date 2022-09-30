@@ -13,14 +13,14 @@ public class Student {
 
     // Adds answer to bottom of the list for Student
     // Requires input validation first
-    public void addAnswer(char letter) {
+    public void addAnswer(char letter) throws IllegalArgumentException {
         try {
             validateLetter(letter);
             answers.add(letter);
         }
         catch (Exception e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
         }
     }

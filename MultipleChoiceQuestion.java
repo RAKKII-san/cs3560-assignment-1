@@ -2,68 +2,89 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class MultipleChoiceQuestion extends Question {
     private List<Character> correctList;
 
-    // Constructor that initializes query
+    // Constructor without preset correct answer list
     public MultipleChoiceQuestion() {
         this.correctList = new ArrayList<>();
         this.answers = new HashMap<>();
     }
 
+    // Constructor with preset correct answer list
+    public MultipleChoiceQuestion(List<Character> list) {
+        this.correctList = list;
+        this.answers = new HashMap<>();
+    }
+
     // Adds correct answer for index
-    public void addCorrectAns(char letter) {
+    public void addCorrectAns(char letter) 
+            throws IllegalArgumentException, IllegalStateException {
         try {
             validateLetter(letter);
+
             if (answers.containsKey(letter)) {
                 correctList.add(letter);
             } else {
-                System.out.println(letter + " not in correct answer list!");
+                throw new IllegalStateException();
             }
         } 
 
-        catch (IndexOutOfBoundsException e) {
+        catch (IllegalArgumentException e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
+        }
+
+        catch (IllegalStateException e2) {
+            System.out.println(letter + " not in answer list.");
         }
     }
 
     // Removes correct answer
-    public void removeCorrectAns(char letter) {
+    // Needs input validation first and have it be in the list
+    public void removeCorrectAns(char letter) 
+            throws IllegalArgumentException, IllegalStateException {
         try {
             validateLetter(letter);
             if (answers.containsKey(letter)) {
                 correctList.remove(letter);
             } else {
-                System.out.println(letter + " not in correct answer list!");
+                throw new IllegalStateException();
             }
         } 
 
-        catch (IndexOutOfBoundsException e) {
+        catch (IllegalArgumentException e) {
             System.out.println(
-                "Invalid letter input."
+                "Invalid letter input, letter must be A-Z."
             );
+        }
+
+        catch (IllegalStateException e2) {
+            System.out.println(letter + " not in correct answer list!");
         }
 
         correctList.remove(letter);
     }
 
+    // Returns correct answer list
     public List<Character> getCorrectAns() {
         return correctList;
     }
 
-	// TODO Use StringJoiner to print comma-separated list
+	// Prints out all answers in a comma-separated list
     @Override
     public void printCorrectAns() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder ansList = new StringBuilder();
+
         for (char c : correctList) {
-            sb.append(c);
-            sb.append(' ');
+            ansList.append(c);
+            ansList.append(", ");
         }
         System.out.println(
-            "Correct answer(s): " + sb.toString()
+            // removes last comma
+            "Correct answer(s): " 
+                + ansList.substring(0, ansList.length() - 2)
         );
     }
 
